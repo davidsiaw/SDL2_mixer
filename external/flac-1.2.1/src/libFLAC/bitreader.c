@@ -154,15 +154,37 @@ struct FLAC__BitReader {
 	FLAC__CPUInfo cpu_info;
 };
 
-#ifdef _MSC_VER
-/* OPT: an MSVC built-in would be better */
+
+/* local_swap32_() */
+/* Swaps the byte order of a 32 bits integer, converting between big-endian and little-endian */
+#if defined(_MSC_VER)
+
+#include <stdlib.h> // Contains _byteswap_ulong() for MSVC according to MSDN
 static _inline FLAC__uint32 local_swap32_(FLAC__uint32 x)
 {
+	/* This is an intrinsic and will expanded to minimal asm by the compiler */
+	return _byteswap_ulong(x);
+}
+
+#else /* defined(_MSC_VER) */
+
+static _inline FLAC__uint32 local_swap32_(FLAC__uint32 x)
+{
+	/* Manual version, a bit slower but works everywhere */
 	x = ((x<<8)&0xFF00FF00) | ((x>>8)&0x00FF00FF);
 	return (x>>16) | (x<<16);
 }
+
+#endif /* defined(_MSC_VER) */
+
+
+/* local_swap32_block_() */
+/* Swaps the byte order of an array of 32 bits integers */
+#if defined(_MSC_VER) && !defined(FLAC__NO_ASM) || !defined(_M_X64)
+
 static void local_swap32_block_(FLAC__uint32 *start, FLAC__uint32 len)
 {
+		/* MSVC specific 32 bit asm version */
 	__asm {
 		mov edx, start
 		mov ecx, len
@@ -178,7 +200,22 @@ loop1:
 done1:
 	}
 }
-#endif
+
+#else /* defined(_MSC_VER) && !defined(FLAC__NO_ASM) || !defined(_M_X64) */
+
+static void local_swap32_block_(FLAC__uint32 *start, FLAC__uint32 len)
+{
+	/* MSVC specific intrinsic version */
+	while(len > 0)
+	{
+		*start = local_swap32_(*start);
+		++start;
+		--len;
+	}
+}
+
+#endif /* defined(_MSC_VER) && !defined(FLAC__NO_ASM) || !defined(_M_X64) */
+
 
 static FLaC__INLINE void crc16_update_word_(FLAC__BitReader *br, brword word)
 {
