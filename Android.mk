@@ -25,6 +25,12 @@ SUPPORT_OGG := true
 OGG_LIBRARY_PATH := external/libogg-1.3.1
 VORBIS_LIBRARY_PATH := external/libvorbisidec-1.2.1
 
+# Enable this if you want to support loading FLAC
+# The library path should be a relative path to this directory.
+SUPPORT_FLAC := true
+FLAC_LIBRARY_PATH := external/flac-1.2.1
+VORBIS_LIBRARY_PATH := external/libvorbisidec-1.2.1
+
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_CFLAGS := -DWAV_MUSIC
@@ -34,6 +40,33 @@ LOCAL_SRC_FILES := $(notdir $(filter-out %/playmus.c %/playwave.c, $(wildcard $(
 LOCAL_LDLIBS :=
 LOCAL_STATIC_LIBRARIES :=
 LOCAL_SHARED_LIBRARIES := SDL2
+
+ifeq ($(SUPPORT_FLAC),true)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(FLAC_LIBRARY_PATH)/include \
+    	$(LOCAL_PATH)/$(FLAC_LIBRARY_PATH)/src/libFLAC/include \
+    	$(LOCAL_PATH)/$(FLAC_LIBRARY_PATH)/android
+    	
+    LOCAL_CFLAGS += -DFLAC_MUSIC
+    LOCAL_CFLAGS += -DHAVE_CONFIG_H -DFLAC__NO_MD5 -DFLAC__INTEGER_ONLY_LIBRARY
+	LOCAL_CFLAGS += -D_REENTRANT -DPIC -DU_COMMON_IMPLEMENTATION -fPIC
+
+    LOCAL_SRC_FILES += \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/bitmath.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/bitreader.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/bitwriter.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/cpu.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/crc.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/fixed.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/float.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/format.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/lpc.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/memory.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/md5.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/stream_decoder.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/stream_encoder.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/stream_encoder_framing.c \
+        $(FLAC_LIBRARY_PATH)/src/libFLAC/window.c
+endif
 
 ifeq ($(SUPPORT_MOD_MODPLUG),true)
     LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(MODPLUG_LIBRARY_PATH)/src $(LOCAL_PATH)/$(MODPLUG_LIBRARY_PATH)/src/libmodplug
