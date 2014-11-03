@@ -872,6 +872,12 @@
 					USE_NATIVE_MIDI,
 					MP3_MUSIC_DISABLED,
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(HEADER_SEARCH_PATHS_QUOTED)",
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					/Library/Frameworks/SDL2.framework/Headers,
+					"$(PROJECT_DIR)/../../SDL/include",
+				);
 				LIBRARY_STYLE = STATIC;
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -890,6 +896,12 @@
 					MID_MUSIC,
 					USE_NATIVE_MIDI,
 					MP3_MUSIC_DISABLED,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(HEADER_SEARCH_PATHS_QUOTED)",
+					"$(HOME)/Library/Frameworks/SDL2.framework/Headers",
+					/Library/Frameworks/SDL2.framework/Headers,
+					"$(PROJECT_DIR)/../../SDL/include",
 				);
 				LIBRARY_STYLE = STATIC;
 				OTHER_LIBTOOL_FLAGS = "";
