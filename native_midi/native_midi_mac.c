@@ -20,6 +20,7 @@
 */
 #include "SDL_config.h"
 #include "SDL_endian.h"
+#include "../mixer.h"
 
 #if __MACOS__ /*|| __MACOSX__ */
 
@@ -82,7 +83,7 @@ static char         gErrorBuffer[ERROR_BUF_SIZE] = "";
 
 
 /* Check whether QuickTime is available */
-int native_midi_detect()
+int native_midi_detect(void)
 {
     /* TODO */
     return 1;
@@ -187,7 +188,7 @@ void native_midi_start(NativeMidiSong *song, int loops)
     assert (loops == 0);
 
     SDL_PauseAudio(1);
-    SDL_UnlockAudio();
+    Mix_UnlockAudio();
 
     /* First, stop the currently playing music */
     native_midi_stop();
@@ -237,11 +238,19 @@ void native_midi_start(NativeMidiSong *song, int loops)
     }
 
 done:
-    SDL_LockAudio();
+    Mix_LockAudio();
     SDL_PauseAudio(0);
 }
 
-void native_midi_stop()
+void native_midi_pause(void)
+{
+}
+
+void native_midi_resume(void)
+{
+}
+
+void native_midi_stop(void)
 {
     if (gTunePlayer == NULL)
         return;
@@ -253,7 +262,7 @@ void native_midi_stop()
     TuneUnroll(gTunePlayer);
 }
 
-int native_midi_active()
+int native_midi_active(void)
 {
     if (gTunePlayer != NULL)
     {

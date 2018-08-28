@@ -28,10 +28,8 @@
 #include <string.h>
 #include <limits.h>
 
-
-/* The maximum number of midi tracks that we can handle
-#define MIDI_TRACKS 32 */
-
+/* The constant 'MThd' */
+#define MIDI_MAGIC	0x4d546864
 
 /* A single midi track as read from the midi file */
 typedef struct
@@ -230,8 +228,11 @@ static MIDIEvent *MIDItoStream(MIDIFile *mididata)
         return NULL;
 
     track = (MIDIEvent**) calloc(1, sizeof(MIDIEvent*) * mididata->nTracks);
-    if (NULL == head)
+    if (NULL == track)
+    {
+        free(head);
         return NULL;
+    }
 
     /* First, convert all tracks to MIDIEvent lists */
     for (trackID = 0; trackID < mididata->nTracks; trackID++)
@@ -292,7 +293,7 @@ static int ReadMIDIFile(MIDIFile *mididata, SDL_RWops *src)
 
     /* Make sure this is really a MIDI file */
     SDL_RWread(src, &ID, 1, 4);
-    if (BE_LONG(ID) != 'MThd')
+    if (BE_LONG(ID) != MIDI_MAGIC)
         return 0;
 
     /* Header size must be 6 */
@@ -380,7 +381,11 @@ MIDIEvent *CreateMIDIEventList(SDL_RWops *src, Uint16 *division)
         *division = mididata->division;
 
     eventList = MIDItoStream(mididata);
-
+    if (eventList == NULL)
+    {
+        free(mididata);
+        return NULL;
+    }
     for(trackID = 0; trackID < mididata->nTracks; trackID++)
     {
         if (mididata->track[trackID].data)
