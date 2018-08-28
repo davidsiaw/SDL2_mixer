@@ -38,3 +38,4 @@ void native_midi_setvolume(int volume);
 const char *native_midi_error(void);
 
 #endif /* _NATIVE_MIDI_H_ */
+ 
