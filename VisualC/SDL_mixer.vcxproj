@@ -127,7 +127,7 @@
     <ClCompile>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\timidity;..\native_midi;external\include;..\..\..\lib\sdl2\include;..\..\...\lib\sdl2_mixer\external\mpg123-1.25.6\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\timidity;..\native_midi;external\include;..\..\..\lib\sdl2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;MUSIC_WAV;__MUSIC_MOD_MODPLUG;MUSIC_OGG;__MUSIC_OPUS;MUSIC_FLAC;MUSIC_MP3_MPG123;MUSIC_MID_TIMIDITY;MUSIC_MID_NATIVE;FLAC__NO_DLL</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
